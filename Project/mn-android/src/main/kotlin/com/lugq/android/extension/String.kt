@@ -21,10 +21,10 @@ fun String.md5(): String {
 }
 
 
-fun String.getUrlParameter(url: String, name: String): String? {
+fun String.getUrlParameter(name: String): String? {
     var result: String? = null
-    val index = url.indexOf("?")
-    val temp = url.substring(index + 1)
+    val index = this.indexOf("?")
+    val temp = this.substring(index + 1)
     val keyValue = temp.split("&".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
     for (str in keyValue) {
         if (str.startsWith(name)) {
