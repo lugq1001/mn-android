@@ -1,6 +1,8 @@
 package com.lugq.android.extension
 
+import android.net.Uri
 import android.text.TextUtils
+import java.lang.Exception
 import java.math.BigInteger
 import java.security.MessageDigest
 import java.util.regex.Pattern
@@ -21,15 +23,13 @@ fun String.md5(): String {
 }
 
 
-fun String.getUrlParameter(name: String): String? {
-    var result: String? = null
-    val index = this.indexOf("?")
-    val temp = this.substring(index + 1)
-    val keyValue = temp.split("&".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-    for (str in keyValue) {
-        if (str.startsWith(name)) {
-            result = str.replace("$name=", "")
-        }
+fun String.getQueryParameter(name: String): String? {
+    try {
+        val uri = Uri.parse(this)
+        return uri.getQueryParameter(name)
+    } catch (e: Exception) {
+
     }
-    return result
+    return null
+
 }
