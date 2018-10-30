@@ -24,6 +24,26 @@ val String.md5: String
         return BigInteger(1, md.digest(toByteArray())).toString(16).padStart(32, '0')
     }
 
+val String.fileSize: String
+    get() {
+        val intVal = kotlin.math.max(this.toInt(), 0)
+        val kb: Int = 1024
+        val mb: Int = kb * 1024
+        val gb: Int = mb * 1024
+        if (intVal >= gb) {
+            val g = intVal / gb
+            return "$g GB"
+        } else if (intVal >= mb) {
+            val m = intVal / mb
+            return "$m M"
+        } else if (intVal >= kb) {
+            val k = intVal / kb
+            return "$k KB"
+        } else {
+            return "$intVal B"
+        }
+    }
+
 fun String.getQueryParameter(name: String): String? {
     try {
         val uri = Uri.parse(this)
@@ -34,3 +54,4 @@ fun String.getQueryParameter(name: String): String? {
     return null
 
 }
+
