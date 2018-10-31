@@ -26,21 +26,30 @@ val String.md5: String
 
 val String.fileSize: String
     get() {
-        val intVal = kotlin.math.max(this.toInt(), 0)
-        val kb: Int = 1024
+        var int = 0
+        try {
+            int = this.toInt()
+        } catch (e: Exception) {
+
+        }
+        val intVal = kotlin.math.max(int, 0)
+        val kb = 1024
         val mb: Int = kb * 1024
         val gb: Int = mb * 1024
-        if (intVal >= gb) {
-            val g = intVal / gb
-            return "$g GB"
-        } else if (intVal >= mb) {
-            val m = intVal / mb
-            return "$m M"
-        } else if (intVal >= kb) {
-            val k = intVal / kb
-            return "$k KB"
-        } else {
-            return "$intVal B"
+        return when {
+            intVal >= gb -> {
+                val g = intVal / gb
+                "$g GB"
+            }
+            intVal >= mb -> {
+                val m = intVal / mb
+                "$m M"
+            }
+            intVal >= kb -> {
+                val k = intVal / kb
+                "$k KB"
+            }
+            else -> "$intVal B"
         }
     }
 

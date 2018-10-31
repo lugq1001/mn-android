@@ -22,10 +22,6 @@ object DrawableUtils {
 
     /***
      * 生成icon
-     * @param context
-     * @param resId
-     * @param colorId
-     * @return
      */
     fun createDrawable(context: Context, @DrawableRes image: Int, @ColorRes color: Int, @DimenRes size: Int): Drawable {
         val iconSize = context.resources.getDimension(size).toInt()
@@ -38,7 +34,7 @@ object DrawableUtils {
 
     fun tintDrawable(context: Context, drawableId: Int, colorValue: Int): Drawable {
         val res = context.resources
-        val drawable = res.getDrawable(drawableId).mutate()
+        val drawable = res.getDrawable(drawableId, null).mutate()
         val wrappedDrawable = DrawableCompat.wrap(drawable)
         val colors = ColorStateList.valueOf(colorValue)
         DrawableCompat.setTintList(wrappedDrawable, colors)
@@ -47,7 +43,7 @@ object DrawableUtils {
 
     fun getDrawable(context: Context, drawableId: Int): Drawable {
         val res = context.resources
-        return res.getDrawable(drawableId).mutate()
+        return res.getDrawable(drawableId, null).mutate()
     }
 
 
