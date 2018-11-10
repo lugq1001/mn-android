@@ -32,11 +32,11 @@ object DrawableUtils {
         return wrappedDrawable
     }
 
-    fun tintDrawable(context: Context, drawableId: Int, colorValue: Int): Drawable {
+    fun tintDrawable(context: Context, @DrawableRes image: Int, @ColorRes color: Int): Drawable {
         val res = context.resources
-        val drawable = res.getDrawable(drawableId, null).mutate()
+        val drawable = res.getDrawable(image, null).mutate()
         val wrappedDrawable = DrawableCompat.wrap(drawable)
-        val colors = ColorStateList.valueOf(colorValue)
+        val colors = ColorStateList.valueOf(ContextCompat.getColor(context, color))
         DrawableCompat.setTintList(wrappedDrawable, colors)
         return wrappedDrawable
     }
@@ -47,8 +47,8 @@ object DrawableUtils {
     }
 
 
-    fun resizeDrawable(context: Context, resId: Int, widthDp: Int, heightDp: Int): Drawable {
-        val original = BitmapFactory.decodeResource(context.resources, resId)
+    fun resizeDrawable(context: Context, @DrawableRes image: Int, widthDp: Int, heightDp: Int): Drawable {
+        val original = BitmapFactory.decodeResource(context.resources, image)
         //        int width = AppHelper.dip2px(c, widthDp);
         //        int height = AppHelper.dip2px(c, heightDp);
         val b = Bitmap.createScaledBitmap(original, widthDp, heightDp, false)
@@ -56,21 +56,21 @@ object DrawableUtils {
     }
 
     fun resizeDrawable(context: Context, @DrawableRes image: Int, @DimenRes size: Int): Drawable {
-        val icon_size = context.resources.getDimension(size).toInt()
+        val iconSize = context.resources.getDimension(size).toInt()
         val original = BitmapFactory.decodeResource(context.resources, image)
         //        int width = AppHelper.dip2px(c, widthDp);
         //        int height = AppHelper.dip2px(c, heightDp);
-        val b = Bitmap.createScaledBitmap(original, icon_size, icon_size, false)
+        val b = Bitmap.createScaledBitmap(original, iconSize, iconSize, false)
         return BitmapDrawable(context.resources, b)
     }
 
 
-    fun tintBitmap(context: Context, resId: Int, tintColor: Int): Bitmap {
-        val inBitmap = BitmapFactory.decodeResource(context.resources, resId)
+    fun tintBitmap(context: Context, @DrawableRes image: Int, @ColorRes color: Int): Bitmap {
+        val inBitmap = BitmapFactory.decodeResource(context.resources, image)
         val outBitmap = Bitmap.createBitmap(inBitmap.width, inBitmap.height, inBitmap.config)
         val canvas = Canvas(outBitmap)
         val paint = Paint()
-        paint.colorFilter = PorterDuffColorFilter(tintColor, PorterDuff.Mode.SRC_IN)
+        paint.colorFilter = PorterDuffColorFilter(ContextCompat.getColor(context, color), PorterDuff.Mode.SRC_IN)
         canvas.drawBitmap(inBitmap, 0f, 0f, paint)
         return outBitmap
 
