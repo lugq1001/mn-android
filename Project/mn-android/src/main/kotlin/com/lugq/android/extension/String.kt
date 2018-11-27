@@ -5,6 +5,7 @@ import android.text.TextUtils
 import java.lang.Exception
 import java.math.BigInteger
 import java.security.MessageDigest
+import java.text.DecimalFormat
 import java.util.regex.Pattern
 
 private const val HEX_CHARS = "0123456789ABCDEF"
@@ -76,4 +77,5 @@ fun String.getQueryParameter(name: String): String? {
     return null
 
 }
+
 
