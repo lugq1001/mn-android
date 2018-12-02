@@ -2,12 +2,7 @@ package com.lugq.android.util
 
 import android.content.Context
 import android.content.res.ColorStateList
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
+import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import androidx.annotation.ColorRes
@@ -15,6 +10,7 @@ import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import java.lang.Exception
 
 
 object DrawableUtils {
@@ -38,6 +34,20 @@ object DrawableUtils {
         val wrappedDrawable = DrawableCompat.wrap(drawable)
         val colors = ColorStateList.valueOf(ContextCompat.getColor(context, color))
         DrawableCompat.setTintList(wrappedDrawable, colors)
+        return wrappedDrawable
+    }
+
+    fun tintDrawable(context: Context, @DrawableRes image: Int, color: String): Drawable {
+        val res = context.resources
+        val drawable = res.getDrawable(image, null).mutate()
+        val wrappedDrawable = DrawableCompat.wrap(drawable)
+        try {
+            val c = Color.parseColor(color)
+            val colors = ColorStateList.valueOf(c)
+            DrawableCompat.setTintList(wrappedDrawable, colors)
+        } catch (e: Exception){
+
+        }
         return wrappedDrawable
     }
 
