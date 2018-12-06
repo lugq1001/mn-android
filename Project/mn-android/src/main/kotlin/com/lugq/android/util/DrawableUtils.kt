@@ -28,6 +28,20 @@ object DrawableUtils {
         return wrappedDrawable
     }
 
+    fun createDrawable(context: Context, @DrawableRes image: Int, colorHex: String, @DimenRes size: Int): Drawable {
+        val iconSize = context.resources.getDimension(size).toInt()
+        val drawable = resizeDrawable(context, image, iconSize, iconSize)
+        val wrappedDrawable = DrawableCompat.wrap(drawable)
+        try {
+            val c = Color.parseColor(colorHex)
+            val colors = ColorStateList.valueOf(c)
+            DrawableCompat.setTintList(wrappedDrawable, colors)
+        } catch (e: Exception){
+
+        }
+        return wrappedDrawable
+    }
+
     fun tintDrawable(context: Context, @DrawableRes image: Int, @ColorRes color: Int): Drawable {
         val res = context.resources
         val drawable = res.getDrawable(image, null).mutate()
@@ -37,12 +51,12 @@ object DrawableUtils {
         return wrappedDrawable
     }
 
-    fun tintDrawable(context: Context, @DrawableRes image: Int, color: String): Drawable {
+    fun tintDrawable(context: Context, @DrawableRes image: Int, colorHex: String): Drawable {
         val res = context.resources
         val drawable = res.getDrawable(image, null).mutate()
         val wrappedDrawable = DrawableCompat.wrap(drawable)
         try {
-            val c = Color.parseColor(color)
+            val c = Color.parseColor(colorHex)
             val colors = ColorStateList.valueOf(c)
             DrawableCompat.setTintList(wrappedDrawable, colors)
         } catch (e: Exception){
