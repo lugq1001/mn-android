@@ -23,50 +23,52 @@ object UriUtil {
     @SuppressLint("NewApi", "ObsoleteSdkInt")
     fun getPath(context: Context, uri: Uri): String? {
 
-        val isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
+        try {
+            val isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
 
-        // DocumentProvider
-        if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
-            // ExternalStorageProvider
-            if (isExternalStorageDocument(uri)) {
-                val docId = DocumentsContract.getDocumentId(uri)
-                val split = docId.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-                val type = split[0]
+            // DocumentProvider
+            if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
+                // ExternalStorageProvider
+                if (isExternalStorageDocument(uri)) {
+                    val docId = DocumentsContract.getDocumentId(uri)
+                    val split = docId.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                    val type = split[0]
 
-                if ("primary".equals(type, ignoreCase = true)) {
-                    return "${Environment.getExternalStorageDirectory()}/${split[1]}"
+                    if ("primary".equals(type, ignoreCase = true)) {
+                        return "${Environment.getExternalStorageDirectory()}/${split[1]}"
+                    }
+                } else if (isDownloadsDocument(uri)) {
+
+                    val id = DocumentsContract.getDocumentId(uri)
+                    val contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), java.lang.Long.valueOf(id))
+
+                    return getDataColumn(context, contentUri, null, null)
+                } else if (isMediaDocument(uri)) {
+                    val docId = DocumentsContract.getDocumentId(uri)
+                    val split = docId.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                    val type = split[0]
+
+                    var contentUri: Uri? = null
+                    when (type) {
+                        "image" -> contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                        "video" -> contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+                        "audio" -> contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+                    }
+
+                    val selection = "_id=?"
+                    val selectionArgs = arrayOf(split[1])
+
+                    return getDataColumn(context, contentUri, selection, selectionArgs)
                 }
-            } else if (isDownloadsDocument(uri)) {
+            } else if ("content".equals(uri.scheme!!, ignoreCase = true)) {
+                return getDataColumn(context, uri, null, null)
+            } else if ("file".equals(uri.scheme!!, ignoreCase = true)) {
+                return uri.path
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
 
-                val id = DocumentsContract.getDocumentId(uri)
-                val contentUri = ContentUris.withAppendedId(
-                        Uri.parse("content://downloads/public_downloads"), java.lang.Long.valueOf(id))
-
-                return getDataColumn(context, contentUri, null, null)
-            } else if (isMediaDocument(uri)) {
-                val docId = DocumentsContract.getDocumentId(uri)
-                val split = docId.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-                val type = split[0]
-
-                var contentUri: Uri? = null
-                when (type) {
-                    "image" -> contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-                    "video" -> contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
-                    "audio" -> contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-                }
-
-                val selection = "_id=?"
-                val selectionArgs = arrayOf(split[1])
-
-                return getDataColumn(context, contentUri, selection, selectionArgs)
-            }// MediaProvider
-            // DownloadsProvider
-        } else if ("content".equals(uri.scheme!!, ignoreCase = true)) {
-            return getDataColumn(context, uri, null, null)
-        } else if ("file".equals(uri.scheme!!, ignoreCase = true)) {
-            return uri.path
-        }// File
-        // MediaStore (and general)
         return null
     }
 
@@ -80,21 +82,19 @@ object UriUtil {
      * @param selectionArgs (Optional) Selection arguments used in the query.
      * @return The value of the _data column, which is typically a file path.
      */
-    private fun getDataColumn(context: Context, uri: Uri?, selection: String?,
-                      selectionArgs: Array<String>?): String? {
+    private fun getDataColumn(context: Context, uri: Uri?, selection: String?, selectionArgs: Array<String>?): String? {
         val column = "_data"
         val projection = arrayOf(column)
         val cursor = context.contentResolver.query(uri!!, projection, selection, selectionArgs, null)
-
+        var result: String? = null
         cursor?.let {
             if (it.moveToFirst()) {
                 val columnIndex = it.getColumnIndexOrThrow(column)
-                it.close()
-                return it.getString(columnIndex)
+                result = it.getString(columnIndex)
             }
         }
         cursor?.close()
-        return null
+        return result
     }
 
     /**
