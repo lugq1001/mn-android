@@ -40,9 +40,9 @@ val String.md5: String
 
 val String.fileSize: String
     get() {
-        var int = 0
+        var int = 0L
         try {
-            int = this.toInt()
+            int = this.toLong()
         } catch (e: Exception) {
 
         }
