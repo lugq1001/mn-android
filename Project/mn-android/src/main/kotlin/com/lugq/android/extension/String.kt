@@ -41,11 +41,7 @@ val String.md5: String
 val String.fileSize: String
     get() {
         var int = 0L
-        try {
-            int = this.toLong()
-        } catch (e: Exception) {
-
-        }
+        int = this.toLongOrNull() ?: 0
         val intVal = kotlin.math.max(int, 0)
         val kb = 1024
         val mb: Int = kb * 1024
