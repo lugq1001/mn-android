@@ -2,10 +2,10 @@ package com.lugq.android.extension
 
 import android.net.Uri
 import android.text.TextUtils
+import android.util.Base64
 import java.lang.Exception
 import java.math.BigInteger
 import java.security.MessageDigest
-import java.text.DecimalFormat
 import java.util.regex.Pattern
 
 private const val HEX_CHARS = "0123456789ABCDEF"
@@ -74,4 +74,11 @@ fun String.getQueryParameter(name: String): String? {
 
 }
 
-
+fun String.decodeB64(): ByteArray? {
+    try {
+        return Base64.decode(this, Base64.DEFAULT)
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+    return null
+}

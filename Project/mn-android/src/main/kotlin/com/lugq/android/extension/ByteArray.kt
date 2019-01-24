@@ -1,5 +1,7 @@
 package com.lugq.android.extension
 
+import android.util.Base64
+import java.lang.Exception
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
@@ -26,6 +28,15 @@ fun ByteArray.read(pos: Int, length: Int): ByteArray {
     return newBytes
 }
 
+fun ByteArray.toB64String(): String? {
+    try {
+        return Base64.encodeToString(this, Base64.DEFAULT)
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+    return null
+}
+
 object ByteUtils {
 
     fun merger(vararg values: ByteArray): ByteArray {
@@ -49,7 +60,6 @@ object ByteUtils {
         b.putInt(int)
         return b.array()
     }
-
 
 }
 
