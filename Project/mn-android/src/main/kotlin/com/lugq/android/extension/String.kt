@@ -40,8 +40,7 @@ val String.md5: String
 
 val String.fileSize: String
     get() {
-        var int = 0L
-        int = this.toLongOrNull() ?: 0
+        val int: Long = this.toLongOrNull() ?: 0
         val intVal = kotlin.math.max(int, 0)
         val kb = 1024
         val mb: Int = kb * 1024
@@ -76,7 +75,7 @@ fun String.getQueryParameter(name: String): String? {
 
 fun String.decodeB64(): ByteArray? {
     try {
-        return Base64.decode(this, Base64.DEFAULT)
+        return Base64.decode(this, Base64.NO_WRAP)
     } catch (e: Exception) {
         e.printStackTrace()
     }

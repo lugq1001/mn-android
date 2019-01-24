@@ -30,7 +30,7 @@ fun ByteArray.read(pos: Int, length: Int): ByteArray {
 
 fun ByteArray.toB64String(): String? {
     try {
-        return Base64.encodeToString(this, Base64.DEFAULT)
+        return Base64.encodeToString(this, Base64.NO_WRAP)
     } catch (e: Exception) {
         e.printStackTrace()
     }
