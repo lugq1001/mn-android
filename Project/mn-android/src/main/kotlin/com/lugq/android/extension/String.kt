@@ -40,26 +40,9 @@ val String.md5: String
 
 val String.fileSize: String
     get() {
-        val int: Long = this.toLongOrNull() ?: 0
-        val intVal = kotlin.math.max(int, 0)
-        val kb = 1024
-        val mb: Int = kb * 1024
-        val gb: Int = mb * 1024
-        return when {
-            intVal >= gb -> {
-                val g = intVal / gb
-                "$g GB"
-            }
-            intVal >= mb -> {
-                val m = intVal / mb
-                "$m M"
-            }
-            intVal >= kb -> {
-                val k = intVal / kb
-                "$k KB"
-            }
-            else -> "$intVal B"
-        }
+        val long: Long = this.toLongOrNull() ?: 0
+        val longVal = kotlin.math.max(long, 0)
+        return longVal.readableFileSize
     }
 
 fun String.getQueryParameter(name: String): String? {
